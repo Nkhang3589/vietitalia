@@ -174,3 +174,4 @@ export default function Ambassador(container) {
             marginwidth="0">Đang tải…</iframe>
     </div>
 </section>`;
+}
