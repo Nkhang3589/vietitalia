@@ -164,16 +164,14 @@ export default function Ambassador(container) {
         <p class="mt-3 text-on-surface-variant">Vui lòng điền thông tin chi tiết dưới đây để chúng tôi có thể hỗ trợ bạn tốt nhất.</p>
     </div>
     
-<div className="w-full text-center my-8">
-  <a 
-    href="https://docs.google.com/forms/d/e/1FAIpQLSfRHuL4CTmFrshhAlbCG3RkkYJcwfdQJI9_HBWLjZ00yiL7PQ/viewform?usp=header" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-900 to-indigo-800 text-white font-bold text-lg rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
-  >
-    <span>📋</span>
-    <span>BẤM VÀO ĐÂY ĐỂ ĐIỀN ĐƠN ĐĂNG KÝ THAM GIA</span>
-  </a>
-</div>
+    <div class="w-full overflow-hidden rounded-xl bg-white shadow-sm" style="min-height: 800px;">
+        <iframe 
+            src="https://docs.google.com/forms/d/e/1FAIpQLSfRHuL4CTmFrshhAlbCG3RkkYJcwfdQJI9_HbWljZOOyiL7PQ/viewform?usp=sharing&ouid=108706406719985546444" 
+            width="100%" 
+            height="1000" 
+            frameborder="0" 
+            marginheight="0" 
+            marginwidth="0">Đang tải…</iframe>
+    </div>
 </section>`;
 }
