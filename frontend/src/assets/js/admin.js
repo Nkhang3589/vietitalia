@@ -1,6 +1,6 @@
 import '../css/style.css'; 
 
-const API_URL = 'https://vietitalia.onrender.com/api'; 
+const API_URL = 'https://vietitalia-v2q9.onrender.com/api'; 
 // const API_URL = 'http://localhost:5000/api'; 
 
 const ITEMS_PER_PAGE = 5; 

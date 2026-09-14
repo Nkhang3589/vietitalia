@@ -1,6 +1,6 @@
 import { getLocale } from '../i18n/i18n.js'; 
 
-const API_URL = 'https://vietitalia.onrender.com/api'; 
+const API_URL = 'https://vietitalia-v2q9.onrender.com/api'; 
 // const API_URL = 'http://localhost:5000/api'; 
 
 function parseDate(dateStr) {
