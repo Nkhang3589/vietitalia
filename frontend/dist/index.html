@@ -181,66 +181,9 @@
   </div>
 </div>
 
-<!-- WIDGET TÌM KIẾM TOÀN VĂN WEBSITE (CTRL+F TOÀN TRANG) -->
+<!-- WIDGET TÌM KIẾM TOÀN DỮ LIỆU QUA BACKEND API -->
 <script>
 (function() {
-  // 1. Cơ sở dữ liệu bài viết (có trường 'content' chứa toàn bộ nội dung bài)
-  let siteDatabase = [
-    {
-      title: "Bước ngoặt chiến lược: Quan hệ đối tác đổi mới giữa Quỹ Pont du Pacifique và VietItalia",
-      category: "SỰ KIỆN",
-      url: "/events",
-      summary: "Hội nghị tại Genoa đánh dấu bước cụ thể hóa hợp tác giữa hai thành phố...",
-      content: "Hội nghị tại Genoa (Ý) đánh dấu bước cụ thể hóa hợp tác giữa hai thành phố; Đại sứ Việt Nam tại Ý nhấn mạnh quan hệ song phương không chỉ dừng ở thương mại mà còn sâu rộng về văn hóa. Bước ngoặt chiến lược trong kỷ nguyên số - văn hóa số giữa Quỹ Pont du Pacifique (Thụy Sĩ) và Hiệp hội Văn hóa VietItalia."
-    },
-    {
-      title: "Chương trình Đại sứ Văn hóa VietItalia 2026",
-      category: "ĐẠI SỨ",
-      url: "/ambassador",
-      summary: "Kết nối thế hệ trẻ, tôn vinh mối quan hệ ngoại giao Việt Nam - Ý.",
-      content: "Chương trình Đại sứ Văn hóa VietItalia nhằm tìm kiếm các gương mặt trẻ cầu nối, phát triển dự án giao lưu giáo dục, du lịch, thương mại và kết nối cộng đồng người Việt tại Ý."
-    },
-    {
-      title: "Chương trình Đào tạo Quốc tế & Học bổng Du học Ý",
-      category: "ĐÀO TẠO",
-      url: "/international-training",
-      summary: "Thông tin tuyển sinh và học bổng du học Ý.",
-      content: "Tổng hợp các chương trình học bổng đại học, thạc sĩ tại các trường Đại học danh tiếng ở Ý như Politecnico di Milano, Bologna, Rome Tor Vergata với các ngành Thiết kế, Kinh tế, Công nghệ."
-    },
-    {
-      title: "Thị trường nước Ý & Cơ hội Giao thương Doanh nghiệp",
-      category: "THỊ TRƯỜNG Ý",
-      url: "/italy-market",
-      summary: "Cơ hội đầu tư kinh doanh giữa Việt Nam và Italia.",
-      content: "Phân tích tiềm năng xuất nhập khẩu nông sản, dệt may, đồ gỗ Việt Nam sang Ý, đồng thời kết nối doanh nghiệp Ý nhập khẩu máy móc, công nghệ cao vào thị trường Việt Nam."
-    }
-  ];
-
-  // Tự động nạp thêm file data/posts.json đầy đủ nếu có trên server
-  fetch('/data/posts.json')
-    .then(res => res.json())
-    .then(data => { if (Array.isArray(data) && data.length > 0) siteDatabase = data; })
-    .catch(() => {});
-
-  // 2. Hàm trích xuất đoạn văn chứa từ khóa (Context Snippet)
-  function getSnippet(fullText, keyword) {
-    if (!fullText) return '';
-    const idx = fullText.toLowerCase().indexOf(keyword.toLowerCase());
-    if (idx === -1) return fullText.substring(0, 110) + '...';
-
-    const start = Math.max(0, idx - 40);
-    const end = Math.min(fullText.length, idx + keyword.length + 60);
-    let snippet = fullText.substring(start, end);
-
-    if (start > 0) snippet = '...' + snippet;
-    if (end < fullText.length) snippet = snippet + '...';
-
-    // Bôi đậm từ khóa trong đoạn văn kết quả
-    const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return snippet.replace(regex, '<mark style="background:#fef08a; color:#000; padding:0 2px; border-radius:2px;">$1</mark>');
-  }
-
-  // 3. Tự động bơm Widget vào Trang
   function injectWidget() {
     if (document.getElementById('floating-search-widget')) return;
 
@@ -254,13 +197,13 @@
         <span>Tìm kiếm</span>
       </button>
 
-      <div id="searchBoxContainer" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 420px; max-width: 92vw; background: #ffffff; padding: 18px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid #e5e7eb;">
+      <div id="searchBoxContainer" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 420px; max-width: 90vw; background: #ffffff; padding: 18px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid #e5e7eb;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6;">
-          <span style="font-size: 13px; font-weight: 700; color: #008751; text-transform: uppercase;">🔍 TÌM TOÀN VĂN WEBSITE</span>
+          <span style="font-size: 13px; font-weight: 700; color: #008751; text-transform: uppercase;">🔍 TÌM KIẾM TOÀN TRANG VIETITALIA</span>
           <button id="closeSearchBtn" type="button" style="background: transparent; border: none; font-size: 18px; font-weight: bold; color: #9ca3af; cursor: pointer; padding: 2px 8px;">✕</button>
         </div>
 
-        <input type="text" id="searchInput" placeholder="Gõ bất kỳ chữ nào (vd: Pont du Pacifique, Thụy Sĩ...)" style="width: 100%; padding: 11px 14px; font-size: 14px; border: 1.5px solid #d1d5db; border-radius: 12px; outline: none; background-color: #f9fafb; color: #111827; box-sizing: border-box;" />
+        <input type="text" id="searchInput" placeholder="Nhập từ khóa tìm kiếm toàn trang..." style="width: 100%; padding: 11px 14px; font-size: 14px; border: 1.5px solid #d1d5db; border-radius: 12px; outline: none; background-color: #f9fafb; color: #111827; box-sizing: border-box;" />
 
         <div id="searchMetaStatus" style="font-size: 11px; color: #6b7280; font-weight: 600; margin-top: 8px; display: none;"></div>
         <div id="searchResults" style="display: none; max-height: 320px; overflow-y: auto; margin-top: 8px; background: #ffffff; border-radius: 12px; border: 1px solid #f3f4f6;"></div>
@@ -270,7 +213,7 @@
     document.body.appendChild(widget);
   }
 
-  // 4. Lắng nghe Sự kiện Toggle & Search
+  // Lắng nghe Click nút Toggle & Đóng
   document.addEventListener('click', function(e) {
     const toggleBtn = e.target.closest('#toggleSearchBtn');
     const closeBtn = e.target.closest('#closeSearchBtn');
@@ -290,118 +233,60 @@
     }
   });
 
+  // Gửi Request Tới API Backend Khi Gõ Chữ
+  let debounceTimer;
   document.addEventListener('input', function(e) {
     if (e.target && e.target.id === 'searchInput') {
-      const keyword = e.target.value.trim().toLowerCase();
+      clearTimeout(debounceTimer);
+      const keyword = e.target.value.trim();
       const searchResults = document.getElementById('searchResults');
       const searchMetaStatus = document.getElementById('searchMetaStatus');
 
-      if (!searchResults) return;
-
       if (!keyword) {
-        searchResults.style.display = 'none';
+        if (searchResults) searchResults.style.display = 'none';
         if (searchMetaStatus) searchMetaStatus.style.display = 'none';
         return;
       }
 
-      // ĐÒ LẠI TOÀN BỘ NỘI DUNG (Title, Summary, và Content)
-      const filtered = siteDatabase.filter(item => {
-        const titleMatch = item.title && item.title.toLowerCase().includes(keyword);
-        const summaryMatch = item.summary && item.summary.toLowerCase().includes(keyword);
-        const contentMatch = item.content && item.content.toLowerCase().includes(keyword);
-        return titleMatch || summaryMatch || contentMatch;
-      });
+      debounceTimer = setTimeout(() => {
+        fetch('/api/search?q=' + encodeURIComponent(keyword))
+          .then(res => res.json())
+          .then(data => {
+            if (!searchResults) return;
 
-      if (searchMetaStatus) {
-        searchMetaStatus.style.display = 'block';
-        searchMetaStatus.innerText = 'Tìm thấy ' + filtered.length + ' bài viết chứa từ "' + keyword + '"';
-      }
+            if (searchMetaStatus) {
+              searchMetaStatus.style.display = 'block';
+              searchMetaStatus.innerText = 'Tìm thấy ' + (data.results ? data.results.length : 0) + ' kết quả cho "' + keyword + '"';
+            }
 
-      if (filtered.length === 0) {
-        searchResults.style.display = 'block';
-        searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #6b7280; text-align: center;">Không tìm thấy chữ "<b>' + keyword + '</b>" ở bất kỳ trang nào.</div>';
-      } else {
-        searchResults.style.display = 'block';
-        searchResults.innerHTML = filtered.map(item => {
-          const targetUrl = `${item.url}?highlight=${encodeURIComponent(keyword)}`;
-          const snippetText = getSnippet(item.content || item.summary, keyword);
-          
-          return `
-            <a href="${targetUrl}" style="display: block; padding: 12px 14px; text-decoration: none; border-bottom: 1px solid #f3f4f6;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
-              <div style="font-size: 10px; font-weight: 700; color: #008751; text-transform: uppercase;">${item.category || 'TIN TỨC'}</div>
-              <div style="font-size: 13.5px; font-weight: 700; color: #111827; margin: 2px 0;">${item.title}</div>
-              <div style="font-size: 12px; color: #4b5563; line-height: 1.4;">${snippetText}</div>
-            </a>
-          `;
-        }).join('');
-      }
+            if (!data.results || data.results.length === 0) {
+              searchResults.style.display = 'block';
+              searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #6b7280; text-align: center;">Không tìm thấy bài viết nào chứa từ "<b>' + keyword + '</b>".</div>';
+            } else {
+              searchResults.style.display = 'block';
+              searchResults.innerHTML = data.results.map(item => `
+                <a href="${item.url}" style="display: block; padding: 12px 14px; text-decoration: none; border-bottom: 1px solid #f3f4f6;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
+                  <div style="font-size: 10px; font-weight: 700; color: #008751; text-transform: uppercase;">${item.category || 'TIN TỨC'}</div>
+                  <div style="font-size: 13.5px; font-weight: 700; color: #111827; margin: 2px 0;">${item.title}</div>
+                  <div style="font-size: 12px; color: #4b5563; line-height: 1.4;">${item.summary || ''}</div>
+                </a>
+              `).join('');
+            }
+          })
+          .catch(() => {
+            if (searchResults) {
+              searchResults.style.display = 'block';
+              searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #ef4444; text-align: center;">Đang kết nối tới máy chủ...</div>';
+            }
+          });
+      }, 250);
     }
   });
 
-  // 5. TỰ ĐỘNG HIGHLIGHT & CUỘN TỚI TỪ KHÓA KHI MỞ TRANG MỚI
-  function autoHighlightOnLoad() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const keyword = urlParams.get('highlight');
-    if (!keyword) return;
-
-    setTimeout(() => {
-      const decodedKey = decodeURIComponent(keyword).toLowerCase();
-      const mainContent = document.querySelector('main') || document.body;
-
-      const walker = document.createTreeWalker(mainContent, NodeFilter.SHOW_TEXT, {
-        acceptNode: function(node) {
-          if (node.parentNode.closest('#floating-search-widget') || 
-              ['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA'].includes(node.parentNode.tagName)) {
-            return NodeFilter.FILTER_REJECT;
-          }
-          return node.textContent.toLowerCase().includes(decodedKey) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-        }
-      });
-
-      let firstMatch = null;
-      const nodesToProcess = [];
-      while (walker.nextNode()) nodesToProcess.push(walker.currentNode);
-
-      nodesToProcess.forEach(node => {
-        const text = node.textContent;
-        const lowerText = text.toLowerCase();
-        const frag = document.createDocumentFragment();
-        let lastIdx = 0;
-
-        let matchIdx = lowerText.indexOf(decodedKey, lastIdx);
-        while (matchIdx !== -1) {
-          if (matchIdx > lastIdx) frag.appendChild(document.createTextNode(text.substring(lastIdx, matchIdx)));
-          
-          const mark = document.createElement('mark');
-          mark.style.backgroundColor = '#ff5722'; // Màu cam nổi bật
-          mark.style.color = '#ffffff';
-          mark.style.padding = '2px 4px';
-          mark.style.borderRadius = '4px';
-          mark.textContent = text.substring(matchIdx, matchIdx + decodedKey.length);
-          
-          frag.appendChild(mark);
-          if (!firstMatch) firstMatch = mark;
-
-          lastIdx = matchIdx + decodedKey.length;
-          matchIdx = lowerText.indexOf(decodedKey, lastIdx);
-        }
-
-        if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.substring(lastIdx)));
-        if (node.parentNode) node.parentNode.replaceChild(frag, node);
-      });
-
-      // Tự động cuộn màn hình đến đúng chữ được tìm thấy
-      if (firstMatch) {
-        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 600);
-  }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { injectWidget(); autoHighlightOnLoad(); });
+    document.addEventListener('DOMContentLoaded', injectWidget);
   } else {
     injectWidget();
-    autoHighlightOnLoad();
   }
 })();
 </script>
