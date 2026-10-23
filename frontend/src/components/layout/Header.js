@@ -1,84 +1,6 @@
 import { renderNavigation, updateNavigationLanguage } from "./Navigation.js"; 
 import { getLocale, toggleLocale, t } from "../../i18n/i18n.js"; 
 
-// 1. Hàm khử dấu Tiếng Việt chuẩn
-function removeVietnameseTones(str) {
-  if (!str) return '';
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D')
-    .toLowerCase()
-    .trim();
-}
-
-// Danh sách các trang cố định trên website
-const staticPages = [
-  { title: "Giới thiệu VietItalia Bridge", category: "GIỚI THIỆU", url: "/about", summary: "Tổ chức cầu nối văn hóa, giáo dục và kinh doanh song phương Việt Nam - Italia." },
-  { title: "Chương trình Đại sứ Văn hóa VietItalia 2026", category: "ĐẠI SỨ", url: "/ambassador", summary: "Kết nối thế hệ trẻ, tôn vinh mối quan hệ ngoại giao Việt Nam - Ý." },
-  { title: "Chương trình Đào tạo Quốc tế & Học bổng Du học Ý", category: "ĐÀO TẠO QUỐC TẾ", url: "/international-training", summary: "Tuyển sinh và học bổng du học tại các trường đại học danh tiếng ở Ý." },
-  { title: "Thị trường nước Ý & Cơ hội Giao thương Doanh nghiệp", category: "THỊ TRƯỜNG Ý", url: "/italy-market", summary: "Tổng quan kinh tế, xuất nhập khẩu và cơ hội đầu tư kinh doanh Việt - Ý." },
-  { title: "Thị trường Việt Nam cho Doanh nghiệp Ý", category: "THỊ TRƯỜNG VIỆT NAM", url: "/vietnam-market", summary: "Thông tin hỗ trợ các doanh nghiệp Ý mở rộng thị trường tại Việt Nam." },
-  { title: "Business Matching - Kết nối Giao thương Doanh nghiệp", category: "KẾT NỐI KINH DOANH", url: "/business-matching", summary: "Dịch vụ cầu nối trực tiếp giữa các đối tác Việt Nam và Ý." },
-  { title: "Du lịch Ý & Trải nghiệm Văn hóa", category: "DU LỊCH", url: "/italy-travel", summary: "Khám phá các di sản văn hóa, ẩm thực, địa điểm du lịch nổi tiếng tại Ý." },
-  { title: "Liên hệ & Hợp tác VietItalia", category: "LIÊN HỆ", url: "/contact", summary: "Thông tin văn phòng liên hệ tại Feltre (BL) - Italia." }
-];
-
-let searchCache = null;
-
-// 2. Hàm nạp toàn bộ dữ liệu thật từ tất cả API & file JSON
-async function loadAllSearchData() {
-  if (searchCache) return searchCache;
-
-  try {
-    const [eventsRes, coursesRes, travelsRes, postsRes] = await Promise.all([
-      fetch('/api/events').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('/api/courses').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('/api/travels').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('/data/posts.json').then(r => r.ok ? r.json() : []).catch(() => [])
-    ]);
-
-    const events = Array.isArray(eventsRes) ? eventsRes : (eventsRes.data || eventsRes.events || []);
-    const courses = Array.isArray(coursesRes) ? coursesRes : (coursesRes.data || coursesRes.courses || []);
-    const travels = Array.isArray(travelsRes) ? travelsRes : (travelsRes.data || travelsRes.travels || []);
-    const posts = Array.isArray(postsRes) ? postsRes : [];
-
-    const formattedEvents = events.map(item => ({
-      title: item.title || item.name || '',
-      category: 'SỰ KIỆN',
-      url: `/events#${item._id || item.id || ''}`,
-      summary: item.description || item.summary || item.content || ''
-    }));
-
-    const formattedCourses = courses.map(item => ({
-      title: item.title || item.name || '',
-      category: 'ĐÀO TẠO QUỐC TẾ',
-      url: `/international-training#${item._id || item.id || ''}`,
-      summary: item.description || item.summary || item.content || ''
-    }));
-
-    const formattedTravels = travels.map(item => ({
-      title: item.title || item.name || '',
-      category: 'DU LỊCH',
-      url: `/italy-travel#${item._id || item.id || ''}`,
-      summary: item.description || item.summary || item.content || ''
-    }));
-
-    searchCache = [
-      ...formattedCourses,
-      ...formattedEvents,
-      ...formattedTravels,
-      ...posts,
-      ...staticPages
-    ];
-  } catch (err) {
-    searchCache = [...staticPages];
-  }
-
-  return searchCache;
-}
-
 export function renderHeader(container) {
   const bar = document.createElement("div");
   bar.className =
@@ -116,95 +38,27 @@ export function renderHeader(container) {
   // --- N A V I G A T I O N (Desktop) ---
   renderNavigation(row);
 
-  // --- S E A R C H   B O X ---
+// --- S E A R C H   B O X (GOOGLE PROGRAMMABLE SEARCH ENGINE) ---
   const searchBox = document.createElement("div");
   searchBox.id = "internal-search-box";
-  searchBox.className = "relative w-36 sm:w-48 lg:w-60 my-auto ml-auto mr-2";
-  searchBox.innerHTML = `
-    <div class="relative">
-      <input 
-        type="text" 
-        id="searchInput" 
-        placeholder="Tìm kiếm..." 
-        autocomplete="off"
-        class="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-full focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] transition-all bg-gray-50/80 focus:bg-white text-gray-800"
-      />
-      <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-      </svg>
-    </div>
-    <div id="searchResults" class="hidden absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 divide-y divide-gray-100">
-    </div>
-  `;
+  searchBox.className = "relative w-48 sm:w-60 lg:w-72 my-auto ml-auto mr-2 min-h-[38px] flex items-center";
+  searchBox.innerHTML = `<div class="gcse-search"></div>`;
   row.append(searchBox);
 
-  // --- GÁN SỰ KIỆN TÌM KIẾM CHO Ô INPUT HEADER ---
-  const searchInput = searchBox.querySelector("#searchInput");
-  const searchResults = searchBox.querySelector("#searchResults");
-
-  if (searchInput && searchResults) {
-    searchInput.addEventListener("input", async (e) => {
-      const rawVal = e.target.value;
-      const cleanQuery = removeVietnameseTones(rawVal);
-
-      if (!cleanQuery) {
-        searchResults.classList.add("hidden");
-        searchResults.innerHTML = "";
-        return;
+  // Kích hoạt Google Search Widget cho ứng dụng SPA
+  setTimeout(() => {
+    if (window.google && window.google.search && window.google.search.cse && window.google.search.cse.element) {
+      window.google.search.cse.element.go();
+    } else {
+      const existingScript = document.querySelector('script[src*="cse.google.com"]');
+      if (!existingScript) {
+        const script = document.createElement("script");
+        script.src = "https://cse.google.com/cse.js?cx=a3506fac398294cae";
+        script.async = true;
+        document.head.appendChild(script);
       }
-
-      const dataset = await loadAllSearchData();
-
-      const matches = dataset.filter((item) => {
-        const title = removeVietnameseTones(item.title);
-        const summary = removeVietnameseTones(item.summary);
-        const category = removeVietnameseTones(item.category);
-
-        return (
-          title.includes(cleanQuery) ||
-          summary.includes(cleanQuery) ||
-          category.includes(cleanQuery)
-        );
-      });
-
-      searchResults.classList.remove("hidden");
-
-      if (matches.length === 0) {
-        searchResults.innerHTML = `
-          <div class="p-3 text-xs text-gray-500 text-center">
-            Không tìm thấy kết quả cho "<b>${rawVal}</b>"
-          </div>
-        `;
-      } else {
-        searchResults.innerHTML = matches
-          .map(
-            (item) => `
-          <a href="${item.url || '#'}" data-link class="block p-3 hover:bg-green-50/60 transition-colors">
-            <div class="text-[10px] font-bold text-[#008751] uppercase tracking-wider mb-0.5">
-              ${item.category || 'TIN TỨC'}
-            </div>
-            <div class="text-xs font-semibold text-gray-900 leading-snug line-clamp-1 mb-1">
-              ${item.title}
-            </div>
-            ${
-              item.summary
-                ? `<div class="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">${item.summary}</div>`
-                : ''
-            }
-          </a>
-        `
-          )
-          .join("");
-      }
-    });
-
-    // Bấm ra ngoài thì đóng dropdown tìm kiếm
-    document.addEventListener("click", (evt) => {
-      if (!searchBox.contains(evt.target)) {
-        searchResults.classList.add("hidden");
-      }
-    });
-  }
+    }
+  }, 100);
 
   // --- L A N G U A G E   B U T T O N ---
   const langButton = document.createElement("button");

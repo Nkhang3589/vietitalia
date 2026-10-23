@@ -3,12 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/public/images/logo/logoVNIT.png" />
+    <link rel="icon" type="image/png" href="/images/logo/logoVNIT.png" />
     <title>VIETITALIA | Cầu nối Việt Nam - Ý</title>
     <meta
-      name="description Cầu nối Việt Nam - Ý"
+      name="description"
       content="Cổng kết nối văn hóa, giáo dục và kinh doanh giữa Việt Nam và Ý."
     />
+
+    <!-- Fonts & Icons -->
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
@@ -17,6 +19,8 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Tailwind CSS & Config -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
       tailwind.config = {
@@ -117,249 +121,49 @@
         },
       };
     </script>
-    <script type="module" crossorigin src="/assets/main-BaFicdbb.js"></script>
+
+    <!-- CSS Tối ưu giao diện Google Search Bar vừa vặn với Header -->
+    <style>
+      #internal-search-box .gsc-control-cse {
+        padding: 0 !important;
+        background-color: transparent !important;
+        border: none !important;
+      }
+      #internal-search-box .gsc-search-box {
+        margin-bottom: 0 !important;
+      }
+      #internal-search-box table.gsc-search-box {
+        margin: 0 !important;
+      }
+      #internal-search-box input.gsc-input {
+        border-radius: 9999px !important;
+        padding: 5px 12px !important;
+        font-size: 12px !important;
+        background: #f9fafb !important;
+        border: 1px solid #e5e7eb !important;
+        height: 32px !important;
+      }
+      #internal-search-box button.gsc-search-button-v2 {
+        border-radius: 9999px !important;
+        background-color: #008751 !important;
+        border-color: #008751 !important;
+        padding: 6px 10px !important;
+        margin-left: 4px !important;
+        height: 32px !important;
+      }
+      .gsc-overflow-hidden {
+        overflow: auto !important;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/main-BU9fL78N.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/style-IUE1QjSX.js">
     <link rel="stylesheet" crossorigin href="/assets/style-CquL0AID.css">
   </head>
   <body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
-<header id="app-header" class="sticky top-0 z-50 bg-white border-b border-gray-100 py-3 px-4">
-  <div id="internal-search-box" class="relative max-w-md w-full mx-auto my-3 px-4">
-  <div class="relative">
-    <input 
-      type="text" 
-      id="searchInput" 
-      placeholder="Tìm kiếm bài viết, sự kiện VietItalia..." 
-      class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] transition-all"
-    />
-    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-    </svg>
-  </div>
-
-  <div id="searchResults" class="hidden absolute left-0 right-0 top-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 divide-y divide-gray-100">
-  </div>
-</div>
-</header>
+    <header id="app-header"></header>
     <main id="app-root"></main>
-    <footer id="app-footer"></footer>
-  <!-- WIDGET TÌM KIẾM NỘI BỘ KIỂU GOOGLE -->
-<div id="floating-search-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 999999; font-family: system-ui, -apple-system, sans-serif;">
-  
-  <!-- Nút Kính Lúp Nổi Mở Tìm Kiếm -->
-  <button id="toggleSearchBtn" style="display: flex; items-center; gap: 8px; background-color: #008751; color: white; border: none; padding: 12px 22px; border-radius: 9999px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;">
-    <span style="font-size: 16px;">🔍</span>
-    <span>Tìm kiếm</span>
-  </button>
+    <footer id="app-footer"></footer>
 
-  <!-- Khung Modal Tìm Kiếm Trải Rộng (Google Style) -->
-  <div id="searchBoxContainer" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 420px; max-width: 92vw; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(12px); padding: 18px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #e5e7eb;">
-    
-    <!-- Header Khung Tìm Kiếm -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6;">
-      <span style="font-size: 13px; font-weight: 700; color: #008751; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
-        🔍 TÌM KIẾM NỘI BỘ VIETITALIA
-      </span>
-      <button id="closeSearchBtn" style="background: transparent; border: none; font-size: 16px; font-weight: bold; color: #9ca3af; cursor: pointer; padding: 2px 8px; border-radius: 6px;">✕</button>
-    </div>
-
-    <!-- Ô Nhập Từ Khóa -->
-    <div style="position: relative; margin-bottom: 10px;">
-      <input 
-        type="text" 
-        id="searchInput" 
-        placeholder="Gõ từ khóa (ví dụ: Genoa, Du lịch, Đại sứ...)" 
-        style="width: 100%; padding: 11px 14px; font-size: 14px; border: 1.5px solid #d1d5db; border-radius: 12px; outline: none; background-color: #f9fafb; color: #111827; box-sizing: border-box; transition: border-color 0.2s;"
-      />
-    </div>
-
-    <!-- Thông báo Số kết quả -->
-    <div id="searchMetaStatus" style="font-size: 11px; color: #6b7280; font-weight: 600; margin-bottom: 8px; display: none;"></div>
-
-    <!-- Danh Sách Kết Quả Trả Về (Thẻ Bài Viết) -->
-    <div id="searchResults" style="display: none; max-height: 320px; overflow-y: auto; background: #ffffff; border-radius: 12px; border: 1px solid #f3f4f6; divide-y: 1px solid #f3f4f6;">
-    </div>
-  </div>
-</div>
-
-<!-- WIDGET TÌM KIẾM TOÀN TRANG TỨC THÌ (CLIENT-SIDE ENGINE) -->
-<script>
-(function() {
-  // Cơ sở dữ liệu toàn bộ ngóc ngách website VietItalia
-  const siteIndex = [
-    {
-      title: "Hội nghị Genoa – Đà Nẵng thúc đẩy hợp tác địa phương",
-      category: "SỰ KIỆN",
-      url: "/events",
-      summary: "Hội nghị tại Genoa (Ý) đánh dấu bước cụ thể hóa hợp tác giữa hai thành phố, thúc đẩy ngoại giao kinh tế và văn hóa.",
-      content: "g%C6%B0%C6%A1ng%20m%E1%BA%B7t%20hoi%20nghi%20genoa%20da%20nang%20hop%20tac%20dia%20phuong%20y%20viet%20nam"
-    },
-    {
-      title: "Chương trình Đại sứ Văn hóa VietItalia 2026",
-      category: "ĐẠI SỨ",
-      url: "/ambassador",
-      summary: "Khám phá Belluno - Feltre - Dolomiti qua Văn hóa, Giáo dục và Cộng đồng. Trở thành Đại sứ Văn hóa VietItalia.",
-      content: "dai su van hoa vietitalia belluno feltre dolomiti ve may bay khu hoi vietnam airlines lich trinh 7 ngay"
-    },
-    {
-      title: "Chương trình Đào tạo Quốc tế & Học bổng Du học Ý",
-      category: "ĐÀO TẠO QUỐC TẾ",
-      url: "/international-training",
-      summary: "Cung cấp thông tin tuyển sinh, liên kết đào tạo cử nhân, thạc sĩ và học bổng du học tại các trường đại học danh tiếng ở Ý.",
-      content: "dao tao quoc te hoc bong du hoc y dai hoc politecnico di milano bologna tor vergata thiet ke kinh te cong nghe"
-    },
-    {
-      title: "Thị trường nước Ý & Cơ hội Giao thương Doanh nghiệp",
-      category: "THỊ TRƯỜNG Ý",
-      url: "/italy-market",
-      summary: "Tổng quan kinh tế, xuất nhập khẩu và các cơ hội đầu tư kinh doanh giữa doanh nghiệp Việt Nam và Italia.",
-      content: "thi truong nuoc y xuat nhap khau thuong mai doanh nghiep viet nam italia nong san det may do go"
-    },
-    {
-      title: "Thị trường Việt Nam & Nhu cầu Kết nối Doanh nghiệp Ý",
-      category: "THỊ TRƯỜNG VIỆT NAM",
-      url: "/vietnam-market",
-      summary: "Thông tin hỗ trợ các doanh nghiệp Ý muốn tìm hiểu môi trường đầu tư và mở rộng thị trường tại Việt Nam.",
-      content: "thi truong viet nam dau tu doanh nghiep y mo rong thi truong ket noi doi tac"
-    },
-    {
-      title: "Business Matching - Kết nối Giao thương Doanh nghiệp Việt - Ý",
-      category: "KẾT NỐI KINH DOANH",
-      url: "/business-matching",
-      summary: "Dịch vụ cầu nối trực tiếp giữa các đối tác, doanh nghiệp Việt Nam và các hiệp hội, tổ chức Ý.",
-      content: "business matching ket noi giao thuong doi tac viet nam italia xuyen quoc gia"
-    },
-    {
-      title: "Du lịch Ý & Hành trình Trải nghiệm Văn hóa",
-      category: "DU LỊCH SỐNG NHƯ Ý",
-      url: "/italy-travel",
-      summary: "Khám phá các di sản văn hóa, ẩm thực, địa điểm du lịch nổi tiếng tại Cộng hòa Italia.",
-      content: "du lich y am thuc di san rome milan venice florence trai nghiem van hoa"
-    },
-    {
-      title: "Giới thiệu VietItalia Bridge - Cầu nối Việt Nam & Italia",
-      category: "GIỚI THIỆU",
-      url: "/about",
-      summary: "Tổ chức cầu nối văn hóa, giáo dục và kinh doanh song phương giữa Việt Nam và Italia.",
-      content: "gioi thieu vietitalia bridge cau noi van hoa giao duc kinh doanh feltre belluno"
-    },
-    {
-      title: "Liên hệ & Hợp tác VietItalia",
-      category: "LIÊN HỆ",
-      url: "/contact",
-      summary: "Thông tin văn phòng liên hệ tại Feltre (BL) - Italia và hỗ trợ trực tuyến.",
-      content: "lien he van phong feltre italia email hotline ho tro"
-    }
-  ];
-
-  let fullDatabase = [...siteIndex];
-
-  // Tự động tải thêm bài viết từ posts.json nếu có
-  fetch('/data/posts.json')
-    .then(res => res.json())
-    .then(data => { if (Array.isArray(data)) fullDatabase = [...data, ...siteIndex]; })
-    .catch(() => {});
-
-  function injectSearchWidget() {
-    if (document.getElementById('floating-search-widget')) return;
-
-    const widget = document.createElement('div');
-    widget.id = 'floating-search-widget';
-    widget.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 999999; font-family: system-ui, -apple-system, sans-serif;';
-
-    widget.innerHTML = `
-      <button id="toggleSearchBtn" type="button" style="display: flex; align-items: center; gap: 8px; background-color: #008751; color: white; border: none; padding: 12px 22px; border-radius: 9999px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); cursor: pointer; font-size: 14px; font-weight: 600;">
-        <span style="font-size: 16px;">🔍</span>
-        <span>Tìm kiếm</span>
-      </button>
-
-      <div id="searchBoxContainer" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 420px; max-width: 90vw; background: #ffffff; padding: 18px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid #e5e7eb;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6;">
-          <span style="font-size: 13px; font-weight: 700; color: #008751; text-transform: uppercase;">🔍 TÌM KIẾM NỘI BỘ VIETITALIA</span>
-          <button id="closeSearchBtn" type="button" style="background: transparent; border: none; font-size: 18px; font-weight: bold; color: #9ca3af; cursor: pointer; padding: 2px 8px;">✕</button>
-        </div>
-
-        <input type="text" id="searchInput" placeholder="Gõ từ khóa (ví dụ: sự kiện, đại sứ, du lịch...)" style="width: 100%; padding: 11px 14px; font-size: 14px; border: 1.5px solid #d1d5db; border-radius: 12px; outline: none; background-color: #f9fafb; color: #111827; box-sizing: border-box;" />
-
-        <div id="searchMetaStatus" style="font-size: 11px; color: #6b7280; font-weight: 600; margin-top: 8px; display: none;"></div>
-        <div id="searchResults" style="display: none; max-height: 320px; overflow-y: auto; margin-top: 8px; background: #ffffff; border-radius: 12px; border: 1px solid #f3f4f6;"></div>
-      </div>
-    `;
-
-    document.body.appendChild(widget);
-  }
-
-  // Lắng nghe sự kiện Bấm nút Mở/Đóng
-  document.addEventListener('click', function(e) {
-    const toggleBtn = e.target.closest('#toggleSearchBtn');
-    const closeBtn = e.target.closest('#closeSearchBtn');
-    const boxContainer = document.getElementById('searchBoxContainer');
-    const searchInput = document.getElementById('searchInput');
-
-    if (toggleBtn) {
-      e.preventDefault();
-      if (boxContainer) {
-        const isHidden = boxContainer.style.display === 'none' || !boxContainer.style.display;
-        boxContainer.style.display = isHidden ? 'block' : 'none';
-        if (isHidden && searchInput) searchInput.focus();
-      }
-    } else if (closeBtn) {
-      e.preventDefault();
-      if (boxContainer) boxContainer.style.display = 'none';
-    }
-  });
-
-  // Tìm kiếm tức thì theo từng phím gõ
-  document.addEventListener('input', function(e) {
-    if (e.target && e.target.id === 'searchInput') {
-      const query = e.target.value.trim().toLowerCase();
-      const searchResults = document.getElementById('searchResults');
-      const searchMetaStatus = document.getElementById('searchMetaStatus');
-
-      if (!searchResults) return;
-
-      if (!query) {
-        searchResults.style.display = 'none';
-        if (searchMetaStatus) searchMetaStatus.style.display = 'none';
-        return;
-      }
-
-      // Lọc nhanh trực tiếp trên Client
-      const matches = fullDatabase.filter(item => {
-        const title = (item.title || '').toLowerCase();
-        const summary = (item.summary || '').toLowerCase();
-        const category = (item.category || '').toLowerCase();
-        const content = (item.content || '').toLowerCase();
-
-        return title.includes(query) || summary.includes(query) || category.includes(query) || content.includes(query);
-      });
-
-      if (searchMetaStatus) {
-        searchMetaStatus.style.display = 'block';
-        searchMetaStatus.innerText = 'Tìm thấy ' + matches.length + ' kết quả cho "' + query + '"';
-      }
-
-      if (matches.length === 0) {
-        searchResults.style.display = 'block';
-        searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #6b7280; text-align: center;">Không tìm thấy mục nào chứa từ "<b>' + query + '</b>".</div>';
-      } else {
-        searchResults.style.display = 'block';
-        searchResults.innerHTML = matches.map(item => `
-          <a href="${item.url}" style="display: block; padding: 12px 14px; text-decoration: none; border-bottom: 1px solid #f3f4f6;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
-            <div style="font-size: 10px; font-weight: 700; color: #008751; text-transform: uppercase;">${item.category || 'NỘI DUNG'}</div>
-            <div style="font-size: 13.5px; font-weight: 700; color: #111827; margin: 2px 0;">${item.title}</div>
-            <div style="font-size: 12px; color: #4b5563; line-height: 1.4;">${item.summary || ''}</div>
-          </a>
-        `).join('');
-      }
-    }
-  });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectSearchWidget);
-  } else {
-    injectSearchWidget();
-  }
-})();
-</script>
-</body>
+    <!-- JS Entry point -->
+  </body>
 </html>

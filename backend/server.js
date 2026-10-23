@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import fs from 'fs';
+import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 
 import eventRoutes from './src/routes/eventRoutes.js';
@@ -20,75 +20,118 @@ app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
-// API Routes sẵn có
+// Hàm bỏ dấu Tiếng Việt ở Backend
+function removeVietnameseTones(str) {
+    if (!str) return '';
+    return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase()
+        .trim();
+}
+
+// API Routes
 app.use('/api/events', eventRoutes);
 app.use('/api/travels', travelRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api', adminRoutes);
 
-// =======================================================
-// API TÌM KIẾM TOÀN BỘ NỘI DUNG WEBSITE (FULL-SITE SEARCH)
-// =======================================================
-app.get('/api/search', (req, res) => {
+// =========================================================
+// API TÌM KIẾM TRỰC TIẾP TRONG DATABASE MONGODB (REAL SERVER SEARCH)
+// =========================================================
+app.get('/api/search', async (req, res) => {
     try {
-        const query = (req.query.q || '').trim().toLowerCase();
-        if (!query) {
+        const rawQuery = (req.query.q || '').trim();
+        if (!rawQuery) {
             return res.json({ success: true, results: [] });
         }
 
-        let allArticles = [];
+        const cleanQuery = removeVietnameseTones(rawQuery);
+        let allResults = [];
 
-        // 1. Quét tự động tất cả các file dữ liệu JSON trong dự án
-        const possibleDataPaths = [
-            path.resolve(__dirname, '../frontend/public/data/posts.json'),
-            path.resolve(__dirname, '../frontend/dist/data/posts.json'),
-            path.resolve(__dirname, './src/data/posts.json')
-        ];
+        // Truy vấn trực tiếp vào các collections trong MongoDB
+        const db = mongoose.connection.db;
 
-        for (const dataPath of possibleDataPaths) {
-            if (fs.existsSync(dataPath)) {
-                try {
-                    const fileContent = fs.readFileSync(dataPath, 'utf8');
-                    const parsed = JSON.parse(fileContent);
-                    if (Array.isArray(parsed)) {
-                        allArticles = allArticles.concat(parsed);
-                    }
-                } catch (e) {
-                    console.warn('Không thể đọc file data:', dataPath);
+        if (db) {
+            // 1. Quét bảng Events
+            const events = await db.collection('events').find({}).toArray().catch(() => []);
+            events.forEach(item => {
+                const title = item.title || item.name || item.title_vi || item.heading || '';
+                const summary = item.summary || item.description || item.content || '';
+                if (removeVietnameseTones(title).includes(cleanQuery) || removeVietnameseTones(summary).includes(cleanQuery)) {
+                    allResults.push({
+                        title,
+                        category: 'SỰ KIỆN',
+                        url: `/events#${item._id}`,
+                        summary
+                    });
                 }
-            }
+            });
+
+            // 2. Quét bảng Courses
+            const courses = await db.collection('courses').find({}).toArray().catch(() => []);
+            courses.forEach(item => {
+                const title = item.title || item.name || item.title_vi || '';
+                const summary = item.summary || item.description || item.content || '';
+                if (removeVietnameseTones(title).includes(cleanQuery) || removeVietnameseTones(summary).includes(cleanQuery)) {
+                    allResults.push({
+                        title,
+                        category: 'ĐÀO TẠO QUỐC TẾ',
+                        url: `/international-training#${item._id}`,
+                        summary
+                    });
+                }
+            });
+
+            // 3. Quét bảng Travels
+            const travels = await db.collection('travels').find({}).toArray().catch(() => []);
+            travels.forEach(item => {
+                const title = item.title || item.name || item.title_vi || '';
+                const summary = item.summary || item.description || item.content || '';
+                if (removeVietnameseTones(title).includes(cleanQuery) || removeVietnameseTones(summary).includes(cleanQuery)) {
+                    allResults.push({
+                        title,
+                        category: 'DU LỊCH',
+                        url: `/italy-travel#${item._id}`,
+                        summary
+                    });
+                }
+            });
         }
 
-        // 2. Thêm danh sách các trang chính tĩnh của website vào danh mục quét
+        // 4. Các trang tĩnh chính
         const staticPages = [
-            { title: "Giới thiệu VietItalia Bridge", category: "GIỚI THIỆU", url: "/about", summary: "Tổ chức cầu nối văn hóa, giáo dục và kinh doanh song phương Việt Nam - Italia.", content: "VietItalia bridge cau noi van hoa giao duc kinh doanh viet nam italia feltre belluno" },
-            { title: "Chương trình Đại sứ Văn hóa VietItalia", category: "ĐẠI SỨ", url: "/ambassador", summary: "Kết nối thế hệ trẻ, tôn vinh mối quan hệ ngoại giao Việt Nam - Ý.", content: "dai su van hoa giao luu thanh nien viet nam italia 2026" },
-            { title: "Đào tạo Quốc tế & Học bổng Du học Ý", category: "ĐÀO TẠO QUỐC TẾ", url: "/international-training", summary: "Tuyển sinh và học bổng các trường đại học hàng đầu tại Ý.", content: "hoc bong du hoc y dai hoc politecnico di milano bologna tor vergata" },
-            { title: "Thị trường nước Ý & Giao thương Doanh nghiệp", category: "THỊ TRƯỜNG Ý", url: "/italy-market", summary: "Cơ hội xuất nhập khẩu và đầu tư kinh doanh Việt - Ý.", content: "thi truong nuoc y xuat nhap khau thuong mai doanh nghiep viet nam italia" },
-            { title: "Thị trường Việt Nam cho Doanh nghiệp Ý", category: "THỊ TRƯỜNG VIỆT NAM", url: "/vietnam-market", summary: "Môi trường đầu tư và kết nối đối tác tại Việt Nam.", content: "dau tu viet nam doanh nghiep y mo rong thi truong" },
-            { title: "Business Matching - Kết nối Giao thương", category: "KẾT NỐI KINH DOANH", url: "/business-matching", summary: "Dịch vụ cầu nối trực tiếp đối tác Việt Nam và Ý.", content: "business matching ket noi giao thuong doi tac viet nam italia" },
-            { title: "Du lịch Ý & Trải nghiệm Văn hóa", category: "DU LỊCH Ý", url: "/italy-travel", summary: "Khám phá di sản, văn hóa và địa điểm du lịch Ý.", content: "du lich y am thuc di san rome milan venice florence" },
-            { title: "Liên hệ & Hợp tác", category: "LIÊN HỆ", url: "/contact", summary: "Thông tin văn phòng liên hệ Feltre (BL) - Italia.", content: "lien he van phong feltre italia hot line email" }
+            { title: "Giới thiệu VietItalia Bridge", category: "GIỚI THIỆU", url: "/about", summary: "Tổ chức cầu nối văn hóa, giáo dục và kinh doanh song phương Việt Nam - Italia." },
+            { title: "Chương trình Đại sứ Văn hóa VietItalia 2026", category: "ĐẠI SỨ", url: "/ambassador", summary: "Kết nối thế hệ trẻ, tôn vinh mối quan hệ ngoại giao Việt Nam - Ý." },
+            { title: "Chương trình Đào tạo Quốc tế & Học bổng Du học Ý", category: "ĐÀO TẠO QUỐC TẾ", url: "/international-training", summary: "Tuyển sinh và học bổng du học tại các trường đại học danh tiếng ở Ý." },
+            { title: "Thị trường nước Ý & Cơ hội Giao thương Doanh nghiệp", category: "THỊ TRƯỜNG Ý", url: "/italy-market", summary: "Tổng quan kinh tế, xuất nhập khẩu và cơ hội đầu tư kinh doanh Việt - Ý." },
+            { title: "Du lịch Ý & Trải nghiệm Văn hóa", category: "DU LỊCH", url: "/italy-travel", summary: "Khám phá các di sản văn hóa, ẩm thực, địa điểm du lịch nổi tiếng tại Ý." },
+            { title: "Liên hệ & Hợp tác VietItalia", category: "LIÊN HỆ", url: "/contact", summary: "Thông tin văn phòng liên hệ tại Feltre (BL) - Italia." }
         ];
 
-        allArticles = allArticles.concat(staticPages);
-
-        // 3. Lọc tất cả bài viết/trang chứa từ khóa ở bất kỳ ngóc ngách nào
-        const results = allArticles.filter(item => {
-            const title = (item.title || '').toLowerCase();
-            const summary = (item.summary || '').toLowerCase();
-            const content = (item.content || '').toLowerCase();
-            const category = (item.category || '').toLowerCase();
-
-            return title.includes(query) || 
-                   summary.includes(query) || 
-                   content.includes(query) || 
-                   category.includes(query);
+        staticPages.forEach(item => {
+            if (removeVietnameseTones(item.title).includes(cleanQuery) || removeVietnameseTones(item.summary).includes(cleanQuery)) {
+                allResults.push(item);
+            }
         });
 
-        res.json({ success: true, total: results.length, results });
+        // Lọc loại bỏ trùng lặp
+        const uniqueResults = [];
+        const seen = new Set();
+        allResults.forEach(item => {
+            const key = removeVietnameseTones(item.title);
+            if (key && !seen.has(key)) {
+                seen.add(key);
+                uniqueResults.push(item);
+            }
+        });
+
+        res.json({ success: true, total: uniqueResults.length, results: uniqueResults });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Lỗi tìm kiếm", error: error.message });
+        console.error("Lỗi API Search:", error);
+        res.status(500).json({ success: false, results: [] });
     }
 });
 
