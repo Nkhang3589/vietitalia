@@ -6,6 +6,11 @@ import eventRoutes from './src/routes/eventRoutes.js';
 import travelRoutes from './src/routes/travelRoutes.js';
 import courseRoutes from './src/routes/courseRoute.js';
 import adminRoutes from './src/routes/adminRoute.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -27,6 +32,13 @@ app.get('/', (req, res) => {
 // Xử lý route 404
 app.use((req, res) => {
     res.status(404).json({ success: false, message: 'Route không tồn tại!' });
+});
+// Cấu hình phục vụ file giao diện Frontend (dist)
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(frontendDistPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
