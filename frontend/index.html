@@ -141,5 +141,100 @@
     <main id="app-root"></main>
     <footer id="app-footer"></footer>
     <script type="module" src="/src/main.js"></script>
-  </body>
+  <!-- WIDGET TÌM KIẾM NỔI ĐỘC LẬP -->
+<div id="floating-search-widget" class="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2 font-sans">
+  <div id="searchBoxContainer" class="hidden w-80 sm:w-96 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-emerald-100">
+    <div class="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
+      <span class="text-xs font-bold text-[#008751] uppercase tracking-wider flex items-center gap-1.5">
+        🔍 Tìm kiếm VietItalia
+      </span>
+      <button id="closeSearchBtn" class="text-gray-400 hover:text-gray-600 text-sm font-bold px-1.5 cursor-pointer">✕</button>
+    </div>
+
+    <div class="relative">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Nhập từ khóa bài viết..." 
+        class="w-full pl-3 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-[#008751] text-gray-800 bg-gray-50/50"
+      />
+    </div>
+
+    <div id="searchResults" class="hidden mt-2 bg-white rounded-xl border border-gray-100 max-h-60 overflow-y-auto divide-y divide-gray-100">
+    </div>
+  </div>
+
+  <button id="toggleSearchBtn" class="flex items-center gap-2 bg-[#008751] hover:bg-[#006b40] text-white px-4 py-3 rounded-full shadow-2xl font-medium text-sm cursor-pointer">
+    🔍 <span>Tìm kiếm</span>
+  </button>
+</div>
+
+<script>
+  (function() {
+    let postsData = [];
+    
+    fetch('/data/posts.json')
+      .then(res => res.json())
+      .then(data => { postsData = data; })
+      .catch(err => console.error('Lỗi tải posts.json:', err));
+
+    function initWidgetLogic() {
+      const toggleBtn = document.getElementById('toggleSearchBtn');
+      const closeBtn = document.getElementById('closeSearchBtn');
+      const boxContainer = document.getElementById('searchBoxContainer');
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          boxContainer.classList.toggle('hidden');
+          if (!boxContainer.classList.contains('hidden') && searchInput) {
+            searchInput.focus();
+          }
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          boxContainer.classList.add('hidden');
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const keyword = e.target.value.trim().toLowerCase();
+          if (!keyword) {
+            searchResults.innerHTML = '';
+            searchResults.classList.add('hidden');
+            return;
+          }
+
+          const filtered = postsData.filter(function(post) {
+            return (post.title && post.title.toLowerCase().indexOf(keyword) !== -1) || 
+                   (post.summary && post.summary.toLowerCase().indexOf(keyword) !== -1);
+          });
+
+          if (filtered.length === 0) {
+            searchResults.innerHTML = '<div class="p-3 text-xs text-gray-500 text-center">Không thấy kết quả cho "' + keyword + '"</div>';
+          } else {
+            searchResults.innerHTML = filtered.map(function(item) {
+              return '<a href="' + item.url + '" class="block p-3 hover:bg-emerald-50/60 transition-colors">' +
+                '<div class="text-[10px] font-semibold text-[#008751] uppercase">' + (item.category || '') + '</div>' +
+                '<div class="text-xs font-bold text-gray-800 line-clamp-1">' + item.title + '</div>' +
+              '</a>';
+            }).join('');
+          }
+          searchResults.classList.remove('hidden');
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initWidgetLogic);
+    } else {
+      initWidgetLogic();
+    }
+  })();
+</script>
+</body>
 </html>

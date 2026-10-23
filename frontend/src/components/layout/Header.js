@@ -38,10 +38,30 @@ export function renderHeader(container) {
   // --- N A V I G A T I O N (Desktop) ---
   renderNavigation(row);
 
+  // --- S E A R C H   B O X ---
+  const searchBox = document.createElement("div");
+  searchBox.id = "internal-search-box";
+  searchBox.className = "relative w-36 sm:w-48 lg:w-60 my-auto ml-auto mr-2";
+  searchBox.innerHTML = `
+    <div class="relative">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Tìm kiếm..." 
+        class="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-full focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] transition-all bg-gray-50/80 focus:bg-white text-gray-800"
+      />
+      <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <div id="searchResults" class="hidden absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 divide-y divide-gray-100">
+    </div>
+  `;
+  row.append(searchBox);
+
   // --- L A N G U A G E   B U T T O N ---
   const langButton = document.createElement("button");
   langButton.type = "button";
-  // Đã điều chỉnh lại padding (p-2) và thêm flex để chứa ảnh cho cân đối
   langButton.className =
     "p-2 border border-outline rounded-md transition hover:bg-gray-100 flex items-center justify-center min-w-[40px]";
   langButton.setAttribute("aria-label", "Đổi ngôn ngữ");
@@ -50,7 +70,7 @@ export function renderHeader(container) {
     const imgSrc = getLocale() === "vi" 
       ?  "/images/logos/flag-vn.jpg"
       : "/images/logos/flag-it.jpg" ;
-       
+        
     const altText = getLocale() === "vi" ? "IT" : "VN";
     
     return `<img src="${imgSrc}" alt="${altText}" class="w-6 h-4 object-cover rounded-sm shadow-sm" />`;
@@ -79,7 +99,6 @@ export function renderHeader(container) {
   mobile.className =
     "hidden absolute top-full inset-x-0 bg-surface border-b border-outline-variant p-5 xl:hidden";
 
-  // ĐÃ SỬA: Dùng khóa (key) thay vì chữ cứng để dịch được
   const mobileMenus = [
     ["/", "nav.home"],
     ["/about", "nav.about"],
@@ -93,7 +112,7 @@ export function renderHeader(container) {
     a.href = path;
     a.dataset.link = "";
     a.dataset.route = path;
-    a.dataset.i18n = key; // Đánh dấu để hàm updateNavigationLanguage quét tới
+    a.dataset.i18n = key;
     a.className = "nav-link block py-3 uppercase text-label-sm";
     a.textContent = t(key);
     mobile.append(a);
@@ -107,11 +126,9 @@ export function renderHeader(container) {
   summary.className =
     "cursor-pointer uppercase text-label-sm font-semibold py-2";
   
-  // Bọc vào span có thẻ data-i18n
   summary.innerHTML = `<span data-i18n="nav.news">${t("nav.news")}</span>`;
   details.append(summary);
 
-  // ĐÃ SỬA: Dùng khóa dịch
   const mobileSubmenus = [
     ["/italy-market", "nav.italyMarket"],
     ["/vietnam-market", "nav.vietnamMarket"],
@@ -124,7 +141,7 @@ export function renderHeader(container) {
     a.href = path;
     a.dataset.link = "";
     a.dataset.route = path;
-    a.dataset.i18n = key; // Đánh dấu
+    a.dataset.i18n = key;
     a.className =
       "block py-2 pl-5 text-sm text-on-surface-variant hover:text-primary";
     a.textContent = t(key);
@@ -138,7 +155,7 @@ export function renderHeader(container) {
   contact.href = "/contact";
   contact.dataset.link = "";
   contact.dataset.route = "/contact";
-  contact.dataset.i18n = "nav.contact"; // Đánh dấu
+  contact.dataset.i18n = "nav.contact";
   contact.className = "nav-link block py-3 uppercase text-label-sm";
   contact.textContent = t("nav.contact");
 
