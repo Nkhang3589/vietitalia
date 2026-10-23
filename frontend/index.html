@@ -180,10 +180,85 @@
   </div>
 </div>
 
-<!-- WIDGET TÌM KIẾM TOÀN DỮ LIỆU QUA BACKEND API -->
+<!-- WIDGET TÌM KIẾM TOÀN TRANG TỨC THÌ (CLIENT-SIDE ENGINE) -->
 <script>
 (function() {
-  function injectWidget() {
+  // Cơ sở dữ liệu toàn bộ ngóc ngách website VietItalia
+  const siteIndex = [
+    {
+      title: "Hội nghị Genoa – Đà Nẵng thúc đẩy hợp tác địa phương",
+      category: "SỰ KIỆN",
+      url: "/events",
+      summary: "Hội nghị tại Genoa (Ý) đánh dấu bước cụ thể hóa hợp tác giữa hai thành phố, thúc đẩy ngoại giao kinh tế và văn hóa.",
+      content: "g%C6%B0%C6%A1ng%20m%E1%BA%B7t%20hoi%20nghi%20genoa%20da%20nang%20hop%20tac%20dia%20phuong%20y%20viet%20nam"
+    },
+    {
+      title: "Chương trình Đại sứ Văn hóa VietItalia 2026",
+      category: "ĐẠI SỨ",
+      url: "/ambassador",
+      summary: "Khám phá Belluno - Feltre - Dolomiti qua Văn hóa, Giáo dục và Cộng đồng. Trở thành Đại sứ Văn hóa VietItalia.",
+      content: "dai su van hoa vietitalia belluno feltre dolomiti ve may bay khu hoi vietnam airlines lich trinh 7 ngay"
+    },
+    {
+      title: "Chương trình Đào tạo Quốc tế & Học bổng Du học Ý",
+      category: "ĐÀO TẠO QUỐC TẾ",
+      url: "/international-training",
+      summary: "Cung cấp thông tin tuyển sinh, liên kết đào tạo cử nhân, thạc sĩ và học bổng du học tại các trường đại học danh tiếng ở Ý.",
+      content: "dao tao quoc te hoc bong du hoc y dai hoc politecnico di milano bologna tor vergata thiet ke kinh te cong nghe"
+    },
+    {
+      title: "Thị trường nước Ý & Cơ hội Giao thương Doanh nghiệp",
+      category: "THỊ TRƯỜNG Ý",
+      url: "/italy-market",
+      summary: "Tổng quan kinh tế, xuất nhập khẩu và các cơ hội đầu tư kinh doanh giữa doanh nghiệp Việt Nam và Italia.",
+      content: "thi truong nuoc y xuat nhap khau thuong mai doanh nghiep viet nam italia nong san det may do go"
+    },
+    {
+      title: "Thị trường Việt Nam & Nhu cầu Kết nối Doanh nghiệp Ý",
+      category: "THỊ TRƯỜNG VIỆT NAM",
+      url: "/vietnam-market",
+      summary: "Thông tin hỗ trợ các doanh nghiệp Ý muốn tìm hiểu môi trường đầu tư và mở rộng thị trường tại Việt Nam.",
+      content: "thi truong viet nam dau tu doanh nghiep y mo rong thi truong ket noi doi tac"
+    },
+    {
+      title: "Business Matching - Kết nối Giao thương Doanh nghiệp Việt - Ý",
+      category: "KẾT NỐI KINH DOANH",
+      url: "/business-matching",
+      summary: "Dịch vụ cầu nối trực tiếp giữa các đối tác, doanh nghiệp Việt Nam và các hiệp hội, tổ chức Ý.",
+      content: "business matching ket noi giao thuong doi tac viet nam italia xuyen quoc gia"
+    },
+    {
+      title: "Du lịch Ý & Hành trình Trải nghiệm Văn hóa",
+      category: "DU LỊCH SỐNG NHƯ Ý",
+      url: "/italy-travel",
+      summary: "Khám phá các di sản văn hóa, ẩm thực, địa điểm du lịch nổi tiếng tại Cộng hòa Italia.",
+      content: "du lich y am thuc di san rome milan venice florence trai nghiem van hoa"
+    },
+    {
+      title: "Giới thiệu VietItalia Bridge - Cầu nối Việt Nam & Italia",
+      category: "GIỚI THIỆU",
+      url: "/about",
+      summary: "Tổ chức cầu nối văn hóa, giáo dục và kinh doanh song phương giữa Việt Nam và Italia.",
+      content: "gioi thieu vietitalia bridge cau noi van hoa giao duc kinh doanh feltre belluno"
+    },
+    {
+      title: "Liên hệ & Hợp tác VietItalia",
+      category: "LIÊN HỆ",
+      url: "/contact",
+      summary: "Thông tin văn phòng liên hệ tại Feltre (BL) - Italia và hỗ trợ trực tuyến.",
+      content: "lien he van phong feltre italia email hotline ho tro"
+    }
+  ];
+
+  let fullDatabase = [...siteIndex];
+
+  // Tự động tải thêm bài viết từ posts.json nếu có
+  fetch('/data/posts.json')
+    .then(res => res.json())
+    .then(data => { if (Array.isArray(data)) fullDatabase = [...data, ...siteIndex]; })
+    .catch(() => {});
+
+  function injectSearchWidget() {
     if (document.getElementById('floating-search-widget')) return;
 
     const widget = document.createElement('div');
@@ -198,11 +273,11 @@
 
       <div id="searchBoxContainer" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 420px; max-width: 90vw; background: #ffffff; padding: 18px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 1px solid #e5e7eb;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6;">
-          <span style="font-size: 13px; font-weight: 700; color: #008751; text-transform: uppercase;">🔍 TÌM KIẾM TOÀN TRANG VIETITALIA</span>
+          <span style="font-size: 13px; font-weight: 700; color: #008751; text-transform: uppercase;">🔍 TÌM KIẾM NỘI BỘ VIETITALIA</span>
           <button id="closeSearchBtn" type="button" style="background: transparent; border: none; font-size: 18px; font-weight: bold; color: #9ca3af; cursor: pointer; padding: 2px 8px;">✕</button>
         </div>
 
-        <input type="text" id="searchInput" placeholder="Nhập từ khóa tìm kiếm toàn trang..." style="width: 100%; padding: 11px 14px; font-size: 14px; border: 1.5px solid #d1d5db; border-radius: 12px; outline: none; background-color: #f9fafb; color: #111827; box-sizing: border-box;" />
+        <input type="text" id="searchInput" placeholder="Gõ từ khóa (ví dụ: sự kiện, đại sứ, du lịch...)" style="width: 100%; padding: 11px 14px; font-size: 14px; border: 1.5px solid #d1d5db; border-radius: 12px; outline: none; background-color: #f9fafb; color: #111827; box-sizing: border-box;" />
 
         <div id="searchMetaStatus" style="font-size: 11px; color: #6b7280; font-weight: 600; margin-top: 8px; display: none;"></div>
         <div id="searchResults" style="display: none; max-height: 320px; overflow-y: auto; margin-top: 8px; background: #ffffff; border-radius: 12px; border: 1px solid #f3f4f6;"></div>
@@ -212,7 +287,7 @@
     document.body.appendChild(widget);
   }
 
-  // Lắng nghe Click nút Toggle & Đóng
+  // Lắng nghe sự kiện Bấm nút Mở/Đóng
   document.addEventListener('click', function(e) {
     const toggleBtn = e.target.closest('#toggleSearchBtn');
     const closeBtn = e.target.closest('#closeSearchBtn');
@@ -232,60 +307,56 @@
     }
   });
 
-  // Gửi Request Tới API Backend Khi Gõ Chữ
-  let debounceTimer;
+  // Tìm kiếm tức thì theo từng phím gõ
   document.addEventListener('input', function(e) {
     if (e.target && e.target.id === 'searchInput') {
-      clearTimeout(debounceTimer);
-      const keyword = e.target.value.trim();
+      const query = e.target.value.trim().toLowerCase();
       const searchResults = document.getElementById('searchResults');
       const searchMetaStatus = document.getElementById('searchMetaStatus');
 
-      if (!keyword) {
-        if (searchResults) searchResults.style.display = 'none';
+      if (!searchResults) return;
+
+      if (!query) {
+        searchResults.style.display = 'none';
         if (searchMetaStatus) searchMetaStatus.style.display = 'none';
         return;
       }
 
-      debounceTimer = setTimeout(() => {
-        fetch('/api/search?q=' + encodeURIComponent(keyword))
-          .then(res => res.json())
-          .then(data => {
-            if (!searchResults) return;
+      // Lọc nhanh trực tiếp trên Client
+      const matches = fullDatabase.filter(item => {
+        const title = (item.title || '').toLowerCase();
+        const summary = (item.summary || '').toLowerCase();
+        const category = (item.category || '').toLowerCase();
+        const content = (item.content || '').toLowerCase();
 
-            if (searchMetaStatus) {
-              searchMetaStatus.style.display = 'block';
-              searchMetaStatus.innerText = 'Tìm thấy ' + (data.results ? data.results.length : 0) + ' kết quả cho "' + keyword + '"';
-            }
+        return title.includes(query) || summary.includes(query) || category.includes(query) || content.includes(query);
+      });
 
-            if (!data.results || data.results.length === 0) {
-              searchResults.style.display = 'block';
-              searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #6b7280; text-align: center;">Không tìm thấy bài viết nào chứa từ "<b>' + keyword + '</b>".</div>';
-            } else {
-              searchResults.style.display = 'block';
-              searchResults.innerHTML = data.results.map(item => `
-                <a href="${item.url}" style="display: block; padding: 12px 14px; text-decoration: none; border-bottom: 1px solid #f3f4f6;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
-                  <div style="font-size: 10px; font-weight: 700; color: #008751; text-transform: uppercase;">${item.category || 'TIN TỨC'}</div>
-                  <div style="font-size: 13.5px; font-weight: 700; color: #111827; margin: 2px 0;">${item.title}</div>
-                  <div style="font-size: 12px; color: #4b5563; line-height: 1.4;">${item.summary || ''}</div>
-                </a>
-              `).join('');
-            }
-          })
-          .catch(() => {
-            if (searchResults) {
-              searchResults.style.display = 'block';
-              searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #ef4444; text-align: center;">Đang kết nối tới máy chủ...</div>';
-            }
-          });
-      }, 250);
+      if (searchMetaStatus) {
+        searchMetaStatus.style.display = 'block';
+        searchMetaStatus.innerText = 'Tìm thấy ' + matches.length + ' kết quả cho "' + query + '"';
+      }
+
+      if (matches.length === 0) {
+        searchResults.style.display = 'block';
+        searchResults.innerHTML = '<div style="padding: 14px; font-size: 13px; color: #6b7280; text-align: center;">Không tìm thấy mục nào chứa từ "<b>' + query + '</b>".</div>';
+      } else {
+        searchResults.style.display = 'block';
+        searchResults.innerHTML = matches.map(item => `
+          <a href="${item.url}" style="display: block; padding: 12px 14px; text-decoration: none; border-bottom: 1px solid #f3f4f6;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
+            <div style="font-size: 10px; font-weight: 700; color: #008751; text-transform: uppercase;">${item.category || 'NỘI DUNG'}</div>
+            <div style="font-size: 13.5px; font-weight: 700; color: #111827; margin: 2px 0;">${item.title}</div>
+            <div style="font-size: 12px; color: #4b5563; line-height: 1.4;">${item.summary || ''}</div>
+          </a>
+        `).join('');
+      }
     }
   });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectWidget);
+    document.addEventListener('DOMContentLoaded', injectSearchWidget);
   } else {
-    injectWidget();
+    injectSearchWidget();
   }
 })();
 </script>
