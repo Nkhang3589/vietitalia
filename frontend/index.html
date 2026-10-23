@@ -120,7 +120,31 @@
     <link rel="stylesheet" href="/src/assets/css/style.css" />
   </head>
   <body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
-    <header id="app-header" class="sticky top-0 z-50 bg-white"></header>
+<header id="app-header" class="sticky top-0 z-50 bg-white border-b border-gray-100 py-3 px-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    
+    <!-- Ô tìm kiếm nội bộ -->
+    <div class="relative max-w-md w-full mx-auto" id="internal-search-box">
+      <div class="relative">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Tìm kiếm bài viết, sự kiện VietItalia..." 
+          class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] transition-all"
+        />
+        <!-- Icon Kính lúp -->
+        <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+
+      <!-- Dropdown danh sách kết quả -->
+      <div id="searchResults" class="hidden absolute left-0 right-0 top-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 divide-y divide-gray-100">
+      </div>
+    </div>
+
+  </div>
+</header>
     <main id="app-root"></main>
     <footer id="app-footer"></footer>
     <script type="module" src="/src/main.js"></script>

@@ -83,3 +83,71 @@ window.addEventListener("localechange", () => {
 });
 
 initFlagEffect();
+// ==========================================
+// TÍNH NĂNG TÌM KIẾM NỘI BỘ VIETITALIA
+// ==========================================
+let postsData = [];
+
+// 1. Tải dữ liệu bài viết từ file JSON
+async function fetchPostsData() {
+  try {
+    const response = await fetch('/data/posts.json');
+    if (!response.ok) throw new Error('Không thể tải file JSON');
+    postsData = await response.json();
+  } catch (error) {
+    console.error('Lỗi tải dữ liệu tìm kiếm:', error);
+  }
+}
+
+// 2. Lắng nghe sự kiện gõ từ khóa
+function initInternalSearch() {
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+
+  if (!searchInput || !searchResults) return;
+
+  searchInput.addEventListener('input', (e) => {
+    const keyword = e.target.value.trim().toLowerCase();
+
+    if (!keyword) {
+      searchResults.innerHTML = '';
+      searchResults.classList.add('hidden');
+      return;
+    }
+
+    const filtered = postsData.filter(post => 
+      post.title.toLowerCase().includes(keyword) || 
+      post.summary.toLowerCase().includes(keyword) ||
+      post.category.toLowerCase().includes(keyword)
+    );
+
+    if (filtered.length === 0) {
+      searchResults.innerHTML = `
+        <div class="p-4 text-sm text-gray-500 text-center">
+          Không tìm thấy nội dung phù hợp với từ khóa "<b>${keyword}</b>"
+        </div>`;
+    } else {
+      searchResults.innerHTML = filtered.map(item => `
+        <a href="${item.url}" class="block p-3.5 hover:bg-emerald-50/50 transition-colors group">
+          <div class="text-[11px] font-semibold text-[#008751] uppercase tracking-wider mb-1">${item.category}</div>
+          <div class="text-sm font-bold text-gray-800 group-hover:text-[#008751] transition-colors">${item.title}</div>
+          <div class="text-xs text-gray-500 line-clamp-2 mt-1 leading-relaxed">${item.summary}</div>
+        </a>
+      `).join('');
+    }
+
+    searchResults.classList.remove('hidden');
+  });
+
+  document.addEventListener('click', (e) => {
+    const searchContainer = document.getElementById('internal-search-box');
+    if (searchContainer && !searchContainer.contains(e.target)) {
+      searchResults.classList.add('hidden');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchPostsData();
+  initInternalSearch();
+});
