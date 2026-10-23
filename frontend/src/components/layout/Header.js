@@ -38,27 +38,32 @@ export function renderHeader(container) {
   // --- N A V I G A T I O N (Desktop) ---
   renderNavigation(row);
 
-// --- S E A R C H   B O X (GOOGLE PROGRAMMABLE SEARCH ENGINE) ---
+  // --- S E A R C H   B O X (GOOGLE PROGRAMMABLE SEARCH ENGINE) ---
   const searchBox = document.createElement("div");
   searchBox.id = "internal-search-box";
-  searchBox.className = "relative w-48 sm:w-60 lg:w-72 my-auto ml-auto mr-2 min-h-[38px] flex items-center";
+  searchBox.className = "relative w-48 sm:w-60 lg:w-72 my-auto ml-auto mr-2 min-h-[38px] flex items-center min-w-[180px]";
   searchBox.innerHTML = `<div class="gcse-search"></div>`;
   row.append(searchBox);
 
-  // Kích hoạt Google Search Widget cho ứng dụng SPA
-  setTimeout(() => {
+  // Kích hoạt Google Search Widget cho SPA
+  const triggerGoogleSearch = () => {
     if (window.google && window.google.search && window.google.search.cse && window.google.search.cse.element) {
       window.google.search.cse.element.go();
-    } else {
-      const existingScript = document.querySelector('script[src*="cse.google.com"]');
-      if (!existingScript) {
-        const script = document.createElement("script");
-        script.src = "https://cse.google.com/cse.js?cx=a3506fac398294cae";
-        script.async = true;
-        document.head.appendChild(script);
-      }
     }
-  }, 100);
+  };
+
+  let cseScript = document.querySelector('script[src*="cse.google.com"]');
+  if (!cseScript) {
+    cseScript = document.createElement("script");
+    cseScript.src = "https://cse.google.com/cse.js?cx=a3506fac398294cae";
+    cseScript.async = true;
+    cseScript.onload = () => setTimeout(triggerGoogleSearch, 100);
+    document.head.appendChild(cseScript);
+  } else {
+    triggerGoogleSearch();
+    setTimeout(triggerGoogleSearch, 300);
+    setTimeout(triggerGoogleSearch, 800);
+  }
 
   // --- L A N G U A G E   B U T T O N ---
   const langButton = document.createElement("button");
