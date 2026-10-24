@@ -3,14 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/images/logo/logoVNIT.png" />
+    <link rel="icon" type="image/png" href="/public/images/logo/logoVNIT.png" />
     <title>VIETITALIA | Cầu nối Việt Nam - Ý</title>
     <meta
-      name="description"
+      name="description Cầu nối Việt Nam - Ý"
       content="Cổng kết nối văn hóa, giáo dục và kinh doanh giữa Việt Nam và Ý."
     />
-
-    <!-- Fonts & Icons -->
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
@@ -19,8 +17,6 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Tailwind CSS & Config -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
       tailwind.config = {
@@ -122,50 +118,35 @@
       };
     </script>
     <link rel="stylesheet" href="/src/assets/css/style.css" />
-
-    <!-- Google Programmable Search Engine Script -->
-    <script async src="https://cse.google.com/cse.js?cx=a3506fac398294cae"></script>
-
-    <!-- CSS Tối ưu giao diện Google Search Bar trên Header -->
-    <style>
-      #internal-search-box .gsc-control-cse {
-        padding: 0 !important;
-        background-color: transparent !important;
-        border: none !important;
-      }
-      #internal-search-box .gsc-search-box {
-        margin-bottom: 0 !important;
-      }
-      #internal-search-box table.gsc-search-box {
-        margin: 0 !important;
-      }
-      #internal-search-box input.gsc-input {
-        border-radius: 9999px !important;
-        padding: 5px 12px !important;
-        font-size: 12px !important;
-        background: #f9fafb !important;
-        border: 1px solid #e5e7eb !important;
-        height: 32px !important;
-      }
-      #internal-search-box button.gsc-search-button-v2 {
-        border-radius: 9999px !important;
-        background-color: #008751 !important;
-        border-color: #008751 !important;
-        padding: 6px 10px !important;
-        margin-left: 4px !important;
-        height: 32px !important;
-      }
-      .gsc-overflow-hidden {
-        overflow: auto !important;
-      }
-    </style>
   </head>
   <body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
-    <header id="app-header"></header>
+<header id="app-header" class="sticky top-0 z-50 bg-white border-b border-gray-100 py-3 px-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    
+    <!-- Ô tìm kiếm nội bộ -->
+    <div class="relative max-w-md w-full mx-auto" id="internal-search-box">
+      <div class="relative">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Tìm kiếm bài viết, sự kiện VietItalia..." 
+          class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#008751] focus:ring-1 focus:ring-[#008751] transition-all"
+        />
+        <!-- Icon Kính lúp -->
+        <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+
+      <!-- Dropdown danh sách kết quả -->
+      <div id="searchResults" class="hidden absolute left-0 right-0 top-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 divide-y divide-gray-100">
+      </div>
+    </div>
+
+  </div>
+</header>
     <main id="app-root"></main>
     <footer id="app-footer"></footer>
-
-    <!-- Entry Point JS -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
