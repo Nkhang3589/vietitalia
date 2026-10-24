@@ -155,25 +155,5 @@ export default function Ambassador(container) {
           ${values.map((v) => `<div class="bg-white p-5 flex gap-2"><span class="text-secondary">✅</span><p class="text-sm">${v}</p></div>`).join("")}
         </div>
       </div>
-    </section>` + `
-
-<!-- Bắt đầu Section Khảo sát -->
-<section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16 bg-surface-container-low rounded-3xl my-10">
-    <div class="text-center mb-8">
-        <h2 class="font-headline-md text-headline-md text-primary">Đăng ký tham gia & Khảo sát</h2>
-        <p class="mt-3 text-on-surface-variant">Vui lòng điền thông tin chi tiết dưới đây để chúng tôi có thể hỗ trợ bạn tốt nhất.</p>
-    </div>
-    
-<div className="w-full text-center my-8">
-  <a 
-    href="https://docs.google.com/forms/d/e/1FAIpQLSfRHuL4CTmFrshhAlbCG3RkkYJcwfdQJI9_HBWLjZ00yiL7PQ/viewform?usp=header" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-900 to-indigo-800 text-white font-bold text-lg rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
-  >
-    <span>📋</span>
-    <span>BẤM VÀO ĐÂY ĐỂ ĐIỀN ĐƠN ĐĂNG KÝ THAM GIA</span>
-  </a>
-</div>
-</section>`;
+    </section>`;
 }

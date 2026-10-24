@@ -1,5 +1,5 @@
-import { renderNavigation, updateNavigationLanguage } from "./Navigation.js"; 
-import { getLocale, toggleLocale, t } from "../../i18n/i18n.js"; 
+import { renderNavigation, updateNavigationLanguage } from "./Navigation.js"; // THÊM updateNavigationLanguage
+import { getLocale, toggleLocale, t } from "../../i18n/i18n.js"; // THÊM hàm t()
 
 export function renderHeader(container) {
   const bar = document.createElement("div");
@@ -38,36 +38,10 @@ export function renderHeader(container) {
   // --- N A V I G A T I O N (Desktop) ---
   renderNavigation(row);
 
-  // --- S E A R C H   B O X (GOOGLE PROGRAMMABLE SEARCH ENGINE) ---
-  const searchBox = document.createElement("div");
-  searchBox.id = "internal-search-box";
-  searchBox.className = "relative w-48 sm:w-60 lg:w-72 my-auto ml-auto mr-2 min-h-[38px] flex items-center min-w-[180px]";
-  searchBox.innerHTML = `<div class="gcse-search"></div>`;
-  row.append(searchBox);
-
-  // Kích hoạt Google Search Widget cho SPA
-  const triggerGoogleSearch = () => {
-    if (window.google && window.google.search && window.google.search.cse && window.google.search.cse.element) {
-      window.google.search.cse.element.go();
-    }
-  };
-
-  let cseScript = document.querySelector('script[src*="cse.google.com"]');
-  if (!cseScript) {
-    cseScript = document.createElement("script");
-    cseScript.src = "https://cse.google.com/cse.js?cx=a3506fac398294cae";
-    cseScript.async = true;
-    cseScript.onload = () => setTimeout(triggerGoogleSearch, 100);
-    document.head.appendChild(cseScript);
-  } else {
-    triggerGoogleSearch();
-    setTimeout(triggerGoogleSearch, 300);
-    setTimeout(triggerGoogleSearch, 800);
-  }
-
   // --- L A N G U A G E   B U T T O N ---
   const langButton = document.createElement("button");
   langButton.type = "button";
+  // Đã điều chỉnh lại padding (p-2) và thêm flex để chứa ảnh cho cân đối
   langButton.className =
     "p-2 border border-outline rounded-md transition hover:bg-gray-100 flex items-center justify-center min-w-[40px]";
   langButton.setAttribute("aria-label", "Đổi ngôn ngữ");
@@ -76,7 +50,7 @@ export function renderHeader(container) {
     const imgSrc = getLocale() === "vi" 
       ?  "/images/logos/flag-vn.jpg"
       : "/images/logos/flag-it.jpg" ;
-        
+       
     const altText = getLocale() === "vi" ? "IT" : "VN";
     
     return `<img src="${imgSrc}" alt="${altText}" class="w-6 h-4 object-cover rounded-sm shadow-sm" />`;
@@ -105,6 +79,7 @@ export function renderHeader(container) {
   mobile.className =
     "hidden absolute top-full inset-x-0 bg-surface border-b border-outline-variant p-5 xl:hidden";
 
+  // ĐÃ SỬA: Dùng khóa (key) thay vì chữ cứng để dịch được
   const mobileMenus = [
     ["/", "nav.home"],
     ["/about", "nav.about"],
@@ -118,7 +93,7 @@ export function renderHeader(container) {
     a.href = path;
     a.dataset.link = "";
     a.dataset.route = path;
-    a.dataset.i18n = key;
+    a.dataset.i18n = key; // Đánh dấu để hàm updateNavigationLanguage quét tới
     a.className = "nav-link block py-3 uppercase text-label-sm";
     a.textContent = t(key);
     mobile.append(a);
@@ -132,9 +107,11 @@ export function renderHeader(container) {
   summary.className =
     "cursor-pointer uppercase text-label-sm font-semibold py-2";
   
+  // Bọc vào span có thẻ data-i18n
   summary.innerHTML = `<span data-i18n="nav.news">${t("nav.news")}</span>`;
   details.append(summary);
 
+  // ĐÃ SỬA: Dùng khóa dịch
   const mobileSubmenus = [
     ["/italy-market", "nav.italyMarket"],
     ["/vietnam-market", "nav.vietnamMarket"],
@@ -147,7 +124,7 @@ export function renderHeader(container) {
     a.href = path;
     a.dataset.link = "";
     a.dataset.route = path;
-    a.dataset.i18n = key;
+    a.dataset.i18n = key; // Đánh dấu
     a.className =
       "block py-2 pl-5 text-sm text-on-surface-variant hover:text-primary";
     a.textContent = t(key);
@@ -161,7 +138,7 @@ export function renderHeader(container) {
   contact.href = "/contact";
   contact.dataset.link = "";
   contact.dataset.route = "/contact";
-  contact.dataset.i18n = "nav.contact";
+  contact.dataset.i18n = "nav.contact"; // Đánh dấu
   contact.className = "nav-link block py-3 uppercase text-label-sm";
   contact.textContent = t("nav.contact");
 
