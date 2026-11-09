@@ -15,6 +15,7 @@ import ItalyTravel from "./pages/ItalyTravel.js";
 import InternationalTraining from "./pages/InternationalTraining.js"; // MỚI THÊM
 
 import { initFlagEffect } from "./components/sections/SnowEffect.js";
+import { getLocale } from "./i18n/i18n.js";
 
 const routes = {
   "/": Home,
@@ -99,7 +100,7 @@ async function fetchPostsData() {
 function normalizeSearchText(value = "") {
   return String(value)
     .normalize("NFD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("vi")
     .trim();
 }
@@ -118,8 +119,9 @@ function initInternalSearch() {
       return;
     }
 
+    const locale = getLocale();
     const matches = postsData.filter((post) =>
-      [post.title, post.category, post.summary]
+      [post.title, post.category, post.summary, post["title_" + locale], post["category_" + locale], post["summary_" + locale]]
         .some((value) => normalizeSearchText(value).includes(keyword)),
     );
 
@@ -132,14 +134,18 @@ function initInternalSearch() {
       matches.slice(0, 8).forEach((post) => {
         const link = document.createElement("a");
         link.href = post.url || "#";
+        if (link.href.startsWith("http")) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
         link.setAttribute("role", "option");
         link.className = "block p-3.5 hover:bg-emerald-50 transition-colors border-b border-gray-100 last:border-0";
         const category = document.createElement("div");
         category.className = "text-[11px] font-semibold text-[#008751] uppercase mb-1";
-        category.textContent = post.category || "";
+        category.textContent = post["category_" + getLocale()] || post.category || "";
         const title = document.createElement("div");
         title.className = "text-sm font-semibold text-gray-800";
-        title.textContent = post.title || "";
+        title.textContent = post["title_" + getLocale()] || post.title || "";
         link.append(category, title);
         searchResults.append(link);
       });
