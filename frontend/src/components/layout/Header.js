@@ -35,6 +35,20 @@ export function renderHeader(container) {
   brand.append(logoImage, logoText);
   row.append(brand);
 
+  // --- TÌM KIẾM NHANH ---
+  const searchBox = document.createElement("div");
+  searchBox.id = "internal-search-box";
+  searchBox.className = "relative hidden md:block w-56 lg:w-72 shrink-0";
+  searchBox.innerHTML = `
+    <label class="sr-only" for="searchInput">Tìm kiếm bài viết và sự kiện</label>
+    <input id="searchInput" type="search" autocomplete="off" placeholder="Tìm kiếm..."
+      class="w-full pl-4 pr-10 py-2 text-sm border border-outline-variant rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-secondary" />
+    <span aria-hidden="true" class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+    <div id="searchResults" role="listbox" aria-label="Kết quả tìm kiếm"
+      class="hidden absolute left-0 right-0 top-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-80 overflow-y-auto z-[60]"></div>
+  `;
+  row.append(searchBox);
+
   // --- N A V I G A T I O N (Desktop) ---
   renderNavigation(row);
 

@@ -83,71 +83,79 @@ window.addEventListener("localechange", () => {
 });
 
 initFlagEffect();
-// ==========================================
-// TÍNH NĂNG TÌM KIẾM NỘI BỘ VIETITALIA
-// ==========================================
+// Tìm kiếm nhanh trên dữ liệu bài viết tĩnh.
 let postsData = [];
 
-// 1. Tải dữ liệu bài viết từ file JSON
 async function fetchPostsData() {
   try {
-    const response = await fetch('/data/posts.json');
-    if (!response.ok) throw new Error('Không thể tải file JSON');
+    const response = await fetch("/data/posts.json");
+    if (!response.ok) throw new Error("Không thể tải dữ liệu tìm kiếm");
     postsData = await response.json();
   } catch (error) {
-    console.error('Lỗi tải dữ liệu tìm kiếm:', error);
+    console.error("Lỗi tải dữ liệu tìm kiếm:", error);
   }
 }
 
-// 2. Lắng nghe sự kiện gõ từ khóa
+function normalizeSearchText(value = "") {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toLocaleLowerCase("vi")
+    .trim();
+}
+
 function initInternalSearch() {
-  const searchInput = document.getElementById('searchInput');
-  const searchResults = document.getElementById('searchResults');
+  const searchBox = document.getElementById("internal-search-box");
+  const searchInput = document.getElementById("searchInput");
+  const searchResults = document.getElementById("searchResults");
+  if (!searchBox || !searchInput || !searchResults) return;
 
-  if (!searchInput || !searchResults) return;
-
-  searchInput.addEventListener('input', (e) => {
-    const keyword = e.target.value.trim().toLowerCase();
-
+  const renderResults = () => {
+    const keyword = normalizeSearchText(searchInput.value);
+    searchResults.replaceChildren();
     if (!keyword) {
-      searchResults.innerHTML = '';
-      searchResults.classList.add('hidden');
+      searchResults.classList.add("hidden");
       return;
     }
 
-    const filtered = postsData.filter(post => 
-      post.title.toLowerCase().includes(keyword) || 
-      post.summary.toLowerCase().includes(keyword) ||
-      post.category.toLowerCase().includes(keyword)
+    const matches = postsData.filter((post) =>
+      [post.title, post.category, post.summary]
+        .some((value) => normalizeSearchText(value).includes(keyword)),
     );
 
-    if (filtered.length === 0) {
-      searchResults.innerHTML = `
-        <div class="p-4 text-sm text-gray-500 text-center">
-          Không tìm thấy nội dung phù hợp với từ khóa "<b>${keyword}</b>"
-        </div>`;
+    if (!matches.length) {
+      const empty = document.createElement("div");
+      empty.className = "p-4 text-sm text-gray-500 text-center";
+      empty.textContent = "Không tìm thấy nội dung phù hợp";
+      searchResults.append(empty);
     } else {
-      searchResults.innerHTML = filtered.map(item => `
-        <a href="${item.url}" class="block p-3.5 hover:bg-emerald-50/50 transition-colors group">
-          <div class="text-[11px] font-semibold text-[#008751] uppercase tracking-wider mb-1">${item.category}</div>
-          <div class="text-sm font-bold text-gray-800 group-hover:text-[#008751] transition-colors">${item.title}</div>
-          <div class="text-xs text-gray-500 line-clamp-2 mt-1 leading-relaxed">${item.summary}</div>
-        </a>
-      `).join('');
+      matches.slice(0, 8).forEach((post) => {
+        const link = document.createElement("a");
+        link.href = post.url || "#";
+        link.setAttribute("role", "option");
+        link.className = "block p-3.5 hover:bg-emerald-50 transition-colors border-b border-gray-100 last:border-0";
+        const category = document.createElement("div");
+        category.className = "text-[11px] font-semibold text-[#008751] uppercase mb-1";
+        category.textContent = post.category || "";
+        const title = document.createElement("div");
+        title.className = "text-sm font-semibold text-gray-800";
+        title.textContent = post.title || "";
+        link.append(category, title);
+        searchResults.append(link);
+      });
     }
+    searchResults.classList.remove("hidden");
+  };
 
-    searchResults.classList.remove('hidden');
+  searchInput.addEventListener("input", renderResults);
+  searchInput.addEventListener("focus", renderResults);
+  document.addEventListener("click", (event) => {
+    if (!searchBox.contains(event.target)) searchResults.classList.add("hidden");
   });
-
-  document.addEventListener('click', (e) => {
-    const searchContainer = document.getElementById('internal-search-box');
-    if (searchContainer && !searchContainer.contains(e.target)) {
-      searchResults.classList.add('hidden');
-    }
+  searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") searchResults.classList.add("hidden");
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetchPostsData();
-  initInternalSearch();
-});
+await fetchPostsData();
+initInternalSearch();
